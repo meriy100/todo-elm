@@ -1,0 +1,50 @@
+service: elm-todo-app
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: ap-northeast-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "*"
+functions:
+  getTodos:
+    handler: handler.getTodos
+
+    events:
+      - http:
+          path: todos
+          method: get
+          integration: lambda
+#          cors: true
+          resp: json
+  postTodo:
+    handler: handler.postTodo
+    events:
+      - http:
+          path: todos
+          method: post
+          integration: lambda
+          resp: json
+          #          cors: true
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+          - AttributeName: Timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+          - AttributeName: Timestamp
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: elmTodo

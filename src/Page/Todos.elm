@@ -21,6 +21,7 @@ type alias Model =
 type Msg
     = GotTodos (Result Http.Error (List Todo))
     | ClickDone Todo
+    | DonedTodo (Result Http.Error Todo)
     | FormMsg Form.Msg
 
 
@@ -39,9 +40,16 @@ update msg model =
 
                 Ok todos ->
                     ( { model | todos = todos }, Cmd.none )
+        DonedTodo result ->
+            case result of
+                Err err ->
+                    ( model, Cmd.none )
+
+                Ok todo ->
+                    ( { model | todos = List.map (\t -> if t.id == todo.id then todo else t) model.todos }, Cmd.none )
 
         ClickDone todo ->
-            ( model, Cmd.none )
+            ( model, doneTodo todo )
 
         FormMsg formMsg ->
             case formMsg of
@@ -70,6 +78,20 @@ fetchTodos =
         , url = Endpoint.todos
         , body = Http.emptyBody
         , expect = Http.expectJson GotTodos Todo.listDecoder
+        }
+
+doneTodo : Todo -> Cmd Msg
+doneTodo todo =
+    let
+        body =
+            Todo.statusEncoder ({todo | status = Todo.DONE })
+                |> Http.jsonBody
+    in
+    Endpoint.request
+        { method = "PATCH"
+        , url = Endpoint.todo todo
+        , body = body
+        , expect = Http.expectJson DonedTodo Todo.decoder
         }
 
 

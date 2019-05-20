@@ -1,4 +1,4 @@
-module Todo exposing (Status(..), Todo, decoder, encoder, init, listDecoder, statusDecoder, toStatus)
+module Todo exposing (..)
 
 import Json.Decode as Decode exposing (..)
 import Json.Encode as Encode exposing (Value)
@@ -24,6 +24,15 @@ init =
     , status = TODO
     , timestamp = Nothing
     }
+
+
+toInt : Status -> Int
+toInt status =
+    case status of
+        TODO ->
+            10
+        DONE ->
+            20
 
 
 toStatus : Int -> Status
@@ -62,4 +71,10 @@ encoder : Todo -> Value
 encoder todo =
     Encode.object
         [ ( "content", Encode.string todo.content )
+        ]
+
+statusEncoder : Todo -> Value
+statusEncoder todo =
+    Encode.object
+        [ ( "status", Encode.int (toInt todo.status) )
         ]

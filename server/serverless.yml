@@ -18,7 +18,7 @@ functions:
           path: todos
           method: get
           integration: lambda
-#          cors: true
+          cors: true
           resp: json
   postTodo:
     handler: handler.postTodo
@@ -28,7 +28,16 @@ functions:
           method: post
           integration: lambda
           resp: json
-          #          cors: true
+          cors: true
+  patchTodo:
+    handler: handler.patchTodo
+    events:
+      - http:
+          path: todos/{id}
+          method: patch
+          integration: lambda
+          resp: json
+          cors: true
 resources:
   Resources:
     DynamoDbTable:
@@ -37,13 +46,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: Id
             AttributeType: S
-          - AttributeName: Timestamp
-            AttributeType: N
         KeySchema:
           - AttributeName: Id
             KeyType: HASH
-          - AttributeName: Timestamp
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

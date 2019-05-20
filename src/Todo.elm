@@ -1,11 +1,13 @@
-module Todo exposing (..)
+module Todo exposing (Status(..), Todo, decoder, encoder, init, listDecoder, statusDecoder, toStatus)
 
 import Json.Decode as Decode exposing (..)
 import Json.Encode as Encode exposing (Value)
 
-type Status =
-    TODO
+
+type Status
+    = TODO
     | DONE
+
 
 type alias Todo =
     { id : Maybe String
@@ -13,6 +15,7 @@ type alias Todo =
     , status : Status
     , timestamp : Maybe Int
     }
+
 
 init : Todo
 init =
@@ -22,20 +25,23 @@ init =
     , timestamp = Nothing
     }
 
+
 toStatus : Int -> Status
 toStatus n =
     case n of
         10 ->
             TODO
+
         20 ->
             DONE
+
         _ ->
             TODO
 
+
 statusDecoder : Decoder Status
 statusDecoder =
-    Decode.map toStatus  Decode.int
-
+    Decode.map toStatus Decode.int
 
 
 decoder : Decoder Todo
@@ -46,12 +52,14 @@ decoder =
         (Decode.field "Status" statusDecoder)
         (Decode.field "Timestamp" (Decode.maybe Decode.int))
 
+
 listDecoder : Decoder (List Todo)
 listDecoder =
     Decode.field "Items" (Decode.list decoder)
 
+
 encoder : Todo -> Value
 encoder todo =
     Encode.object
-        [  ( "content", Encode.string todo.content )
+        [ ( "content", Encode.string todo.content )
         ]

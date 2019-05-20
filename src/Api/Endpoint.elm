@@ -30,7 +30,7 @@ request config =
         }
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
-    Url.Builder.crossOrigin "https://c9shp166s2.execute-api.ap-northeast-1.amazonaws.com/dev"
+    Url.Builder.crossOrigin "https://1y2akyrem4.execute-api.ap-northeast-1.amazonaws.com/dev"
         paths
         queryParams
         |> Endpoint

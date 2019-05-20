@@ -14,6 +14,14 @@ type alias Todo =
     , timestamp : Maybe Int
     }
 
+init : Todo
+init =
+    { id = Nothing
+    , content = ""
+    , status = TODO
+    , timestamp = Nothing
+    }
+
 toStatus : Int -> Status
 toStatus n =
     case n of
@@ -45,5 +53,5 @@ listDecoder =
 encoder : Todo -> Value
 encoder todo =
     Encode.object
-        [  ( "Content", Encode.string todo.content )
+        [  ( "content", Encode.string todo.content )
         ]

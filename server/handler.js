@@ -23,7 +23,7 @@ module.exports.postTodo = async (event) => {
 
   return await dynamo.putItem(payload).promise()
       .then((successMessage) => {
-        return JSON.stringify(payload.Item)
+        return payload.Item
     });
 };
 

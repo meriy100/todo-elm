@@ -12,7 +12,7 @@ module.exports.getTasks = (event, content, callback) => {
     if (error) {
       callback(error);
     }
-    callback(error, data.Items);
+    callback(error, {Items: data.Items});
   });
 };
 

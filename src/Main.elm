@@ -1,13 +1,13 @@
 module Main exposing (main)
 
 import Browser
-import Page.Todos exposing (..)
+import Page.MyTasks exposing (..)
 
 
 main =
     Browser.element
-        { init = Page.Todos.init
-        , update = Page.Todos.update
-        , view = Page.Todos.view
-        , subscriptions = Page.Todos.subscriptions
+        { init = Page.MyTasks.init
+        , update = Page.MyTasks.update
+        , view = Page.MyTasks.view
+        , subscriptions = Page.MyTasks.subscriptions
         }

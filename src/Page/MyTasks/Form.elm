@@ -1,4 +1,4 @@
-module Page.Todos.Form exposing (Model, Msg(..), initModel, postTodo, update, view)
+module Page.MyTasks.Form exposing (..)
 
 import Api.Endpoint as Endpoint exposing (..)
 import Bootstrap.Button as Button
@@ -6,59 +6,59 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Html exposing (..)
 import Http
-import Todo as Todo exposing (..)
+import MyTask as MyTask exposing (..)
 
 
 type alias Model =
-    { todo : Todo
+    { task : MyTask
     }
 
 
 type Msg
-    = GotTodo (Result Http.Error Todo)
+    = GotMyTask (Result Http.Error MyTask)
     | ChangeContent String
-    | SubmitTodo
+    | SubmitMyTask
 
 
 initModel =
-    { todo = Todo.init
+    { task = MyTask.init
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotTodo result ->
+        GotMyTask result ->
             case result of
                 Err error ->
                     ( model, Cmd.none )
 
                 Ok _ ->
-                    ( { model | todo = Todo.init }, Cmd.none )
+                    ( { model | task = MyTask.init }, Cmd.none )
 
         ChangeContent content ->
             let
-                todo =
-                    model.todo
+                task =
+                    model.task
             in
-            ( { model | todo = { todo | content = content } }, Cmd.none )
+            ( { model | task = { task | content = content } }, Cmd.none )
 
-        SubmitTodo ->
-            ( model, postTodo model.todo )
+        SubmitMyTask ->
+            ( model, postMyTask model.task )
 
 
-postTodo : Todo -> Cmd Msg
-postTodo newTodo =
+postMyTask : MyTask -> Cmd Msg
+postMyTask newMyTask =
     let
         body =
-            Todo.encoder newTodo
+            MyTask.encoder newMyTask
                 |> Http.jsonBody
     in
     Endpoint.request
         { method = "POST"
-        , url = Endpoint.todos
+        , url = Endpoint.tasks
         , body = body
-        , expect = Http.expectJson GotTodo Todo.decoder
+        , expect = Http.expectJson GotMyTask MyTask.decoder
         }
 
 
@@ -70,6 +70,6 @@ view =
             , Input.text [ Input.onInput ChangeContent ]
             ]
         , Form.group []
-            [ Button.button [ Button.onClick SubmitTodo, Button.primary ] [ text "作成" ]
+            [ Button.button [ Button.onClick SubmitMyTask, Button.primary ] [ text "作成" ]
             ]
         ]

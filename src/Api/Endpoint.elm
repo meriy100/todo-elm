@@ -2,7 +2,7 @@ module Api.Endpoint exposing (..)
 
 import Url.Builder exposing(..)
 import Http
-import Todo exposing (..)
+import MyTask exposing (..)
 
 type Endpoint =
     Endpoint String
@@ -30,15 +30,15 @@ request config =
         }
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
-    Url.Builder.crossOrigin "https://1y2akyrem4.execute-api.ap-northeast-1.amazonaws.com/dev"
+    Url.Builder.crossOrigin "https://fu58fy81j0.execute-api.ap-northeast-1.amazonaws.com/dev"
         paths
         queryParams
         |> Endpoint
 
-todos : Endpoint
-todos =
-    url ["todos"] []
+tasks : Endpoint
+tasks =
+    url ["tasks"] []
 
-todo : Todo -> Endpoint
-todo t =
-    url ["todos", Maybe.withDefault "" t.id] []
+task : MyTask -> Endpoint
+task t =
+    url ["tasks", Maybe.withDefault "" t.id] []

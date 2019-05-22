@@ -11,29 +11,29 @@ provider:
       Resource: "*"
 functions:
   getTodos:
-    handler: handler.getTodos
+    handler: handler.getTasks
 
     events:
       - http:
-          path: todos
+          path: tasks
           method: get
           integration: lambda
           cors: true
           resp: json
   postTodo:
-    handler: handler.postTodo
+    handler: handler.postTask
     events:
       - http:
-          path: todos
+          path: tasks
           method: post
           integration: lambda
           resp: json
           cors: true
   patchTodo:
-    handler: handler.patchTodo
+    handler: handler.patchTask
     events:
       - http:
-          path: todos/{id}
+          path: tasks/{id}
           method: patch
           integration: lambda
           resp: json
@@ -52,4 +52,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: elmTodo
+        TableName: elmTasks

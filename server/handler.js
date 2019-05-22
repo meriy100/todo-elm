@@ -1,14 +1,22 @@
 'use strict';
-const doc = require('dynamodb-doc');
-const dynamo = new doc.DynamoDB();
 const uuid = require('uuid');
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-module.exports.getTodos = async (event) => {
-  return await dynamo.scan({ TableName: "elmTodo" }).promise();
+module.exports.getTasks = (event, content, callback) => {
+  const params = {
+    TableName: 'elmTasks',
+  };
+
+  return dynamoDb.scan(params, (error, data) => {
+    if (error) {
+      callback(error);
+    }
+    callback(error, data.Items);
+  });
 };
 
-module.exports.postTodo = async (event) => {
-  console.log('Received event:', JSON.stringify(event, null, 2));
+module.exports.postTask = (event, content, callback) => {
   const item = {
     Id: uuid.v1(),
     Content: event.body.content,
@@ -16,21 +24,23 @@ module.exports.postTodo = async (event) => {
     Timestamp: Number(Math.floor(Date.now() / 1000))
   };
 
-  const payload = {
-    TableName: "elmTodo",
+
+  const params = {
+    TableName: "elmTasks",
     Item: item
   };
 
-  return await dynamo.putItem(payload).promise()
-      .then((successMessage) => {
-        return payload.Item
-    });
+  return dynamoDb.put(params, (error, data) => {
+    if (error) {
+      callback(error);
+    }
+    callback(error, params.Item);
+  });
 };
 
-module.exports.patchTodo = async (event) => {
-  console.log('Received event:', JSON.stringify(event, null, 2));
-  const payload = {
-    TableName: "elmTodo",
+module.exports.patchTask = (event, content, callback) => {
+  const params = {
+    TableName: "elmTasks",
     Key: {
       Id: event.path.id
     },
@@ -43,6 +53,11 @@ module.exports.patchTodo = async (event) => {
     UpdateExpression: 'SET #s = :newStatus'
   };
 
-  return await dynamo.updateItem(payload).promise()
-};
 
+  return dynamoDb.update(params, (error, data) => {
+    if (error) {
+      callback(error);
+    }
+    callback(error, data);
+  });
+};
